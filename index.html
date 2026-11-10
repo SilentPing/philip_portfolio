@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+        name="description"
+        content="A student directory and frontend profile manager"
+    >
+
+    <title>Campus | Student Profiling</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <a class="brand" href="index.html">
+            <b>c•</b>
+            campus.
+        </a>
+
+        <div class="workspace">
+            ▥
+            <div>
+                <strong>Institute of Computing</strong>
+                <small>Student workspace</small>
+            </div>
+        </div>
+
+        <div class="caption">WORKSPACE</div>
+
+        <nav aria-label="Main navigation">
+            <button class="nav-item active" id="directoryNav">
+                ▦
+                <span>Student directory</span>
+                <small id="navCount">0</small>
+            </button>
+
+            <button class="nav-item" id="insightsNav">
+                ◴
+                <span>Program insights</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="demo-note">
+                <span class="dot"></span>
+                FRONTEND DEMO
+
+                <p>
+                    A little space for every<br>
+                    student’s bigger story.
+                </p>
+
+                <small>Sample records · Browser storage</small>
+            </div>
+
+            <div class="account">
+                <span class="avatar">NB</span>
+
+                <div>
+                    <strong>Noli Baluyot</strong>
+                    <small>Faculty workspace</small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Application -->
+    <div class="app-shell">
+        <!-- Top Navigation -->
+        <header class="topbar">
+            <button
+                id="menuToggle"
+                class="btn mobile-menu"
+                aria-label="Toggle navigation"
+                aria-expanded="false"
+            >
+                ☰
+            </button>
+
+            <div>
+                Workspace
+                <span>/</span>
+                <strong id="breadcrumb">Student directory</strong>
+            </div>
+
+            <small>AY 2026–2027 · First semester</small>
+        </header>
+
+        <main>
+            <!-- Page Heading -->
+            <section class="page-heading">
+                <div>
+                    <div class="eyebrow">PEOPLE &amp; POSSIBILITIES</div>
+
+                    <h1 id="pageTitle">
+                        Student directory<span>.</span>
+                    </h1>
+
+                    <p id="pageDescription">
+                        Know your students. Support their next chapter.
+                    </p>
+                </div>
+
+                <div class="heading-actions">
+                    <button class="btn btn-export" id="exportBtn">
+                        ↓ &nbsp; Export CSV
+                    </button>
+
+                    <button class="btn btn-primary" id="addBtn">
+                        ＋ &nbsp; Add student
+                    </button>
+                </div>
+            </section>
+
+            <!-- Summary Statistics -->
+            <div class="row g-3 stats">
+                <div class="col-6 col-xl-3">
+                    <article class="stat">
+                        <div>
+                            Total students
+                            <span>♙</span>
+                        </div>
+
+                        <strong id="totalStat">0</strong>
+                        <small>Across all programs</small>
+                    </article>
+                </div>
+
+                <div class="col-6 col-xl-3">
+                    <article class="stat">
+                        <div>
+                            Active students
+                            <span>↗</span>
+                        </div>
+
+                        <strong id="activeStat">0</strong>
+
+                        <small>
+                            <span class="dot"></span>
+                            Currently enrolled
+                        </small>
+                    </article>
+                </div>
+
+                <div class="col-6 col-xl-3">
+                    <article class="stat">
+                        <div>
+                            Programs
+                            <span>▤</span>
+                        </div>
+
+                        <strong>3</strong>
+                        <small>BSIT, BSCS &amp; BSIS</small>
+                    </article>
+                </div>
+
+                <div class="col-6 col-xl-3">
+                    <article class="stat">
+                        <div>
+                            New this month
+                            <span>✧</span>
+                        </div>
+
+                        <strong id="newStat">0</strong>
+                        <small>Profiles added this month</small>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Student Directory -->
+            <section id="directorySection" class="directory-panel">
+                <!-- Status Filters -->
+                <div class="panel-top">
+                    <div
+                        class="tab-list"
+                        role="group"
+                        aria-label="Student status"
+                    >
+                        <button
+                            class="tab active"
+                            data-tab="all"
+                            aria-pressed="true"
+                        >
+                            All students
+                            <span id="allCount">0</span>
+                        </button>
+
+                        <button
+                            class="tab"
+                            data-tab="Active"
+                            aria-pressed="false"
+                        >
+                            Active
+                        </button>
+
+                        <button
+                            class="tab"
+                            data-tab="Inactive"
+                            aria-pressed="false"
+                        >
+                            Inactive
+                        </button>
+                    </div>
+
+                    <span class="panel-hint">
+                        <span class="dot"></span>
+                        Saved on this browser
+                    </span>
+                </div>
+
+                <!-- Search and Filters -->
+                <div class="toolbar">
+                    <label class="search-box">
+                        <span aria-hidden="true">⌕</span>
+
+                        <input
+                            type="search"
+                            id="search"
+                            placeholder="Search by name, student ID or email…"
+                            aria-label="Search students"
+                        >
+
+                        <kbd>/</kbd>
+                    </label>
+
+                    <select
+                        id="programFilter"
+                        class="form-select"
+                        aria-label="Filter program"
+                    >
+                        <option value="">All programs</option>
+                        <option>BSIT</option>
+                        <option>BSCS</option>
+                        <option>BSIS</option>
+                    </select>
+
+                    <select
+                        id="yearFilter"
+                        class="form-select"
+                        aria-label="Filter year"
+                    >
+                        <option value="">All year levels</option>
+                        <option value="1">1st year</option>
+                        <option value="2">2nd year</option>
+                        <option value="3">3rd year</option>
+                        <option value="4">4th year</option>
+                    </select>
+
+                    <button
+                        id="clearFilters"
+                        class="btn clear-btn"
+                        aria-label="Clear filters"
+                    >
+                        ↺
+                    </button>
+                </div>
+
+                <!-- Student Table -->
+                <div class="table-responsive">
+                    <table class="table student-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    <button id="sortName">STUDENT ↕</button>
+                                </th>
+                                <th scope="col">STUDENT ID</th>
+                                <th scope="col">PROGRAM</th>
+                                <th scope="col">YEAR &amp; SECTION</th>
+                                <th scope="col">STATUS</th>
+                                <th scope="col" class="text-end">PROFILE</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="studentRows">
+                            <!-- Student rows are generated by app.js -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState" hidden>
+                    <h3>No students found</h3>
+                    <p>Try another search or clear your filters.</p>
+
+                    <button id="emptyClear" class="btn btn-export">
+                        Clear filters
+                    </button>
+                </div>
+
+                <!-- Pagination -->
+                <footer class="table-footer">
+                    <span id="resultCount" role="status"></span>
+
+                    <div class="pagination-controls">
+                        <button
+                            class="btn"
+                            id="prevPage"
+                            aria-label="Previous page"
+                        >
+                            ←
+                        </button>
+
+                        <span id="pageLabel">1</span>
+
+                        <button
+                            class="btn"
+                            id="nextPage"
+                            aria-label="Next page"
+                        >
+                            →
+                        </button>
+                    </div>
+                </footer>
+            </section>
+
+            <!-- Program Insights -->
+            <section id="insightsSection" class="insights-panel" hidden>
+                <h2>A closer look at your community</h2>
+
+                <p>
+                    Student distribution across the Institute of Computing.
+                </p>
+
+                <div id="programBars">
+                    <!-- Program statistics are generated by app.js -->
+                </div>
+            </section>
+
+            <!-- Bottom Note -->
+            <div class="bottom-note">
+                <span>Every profile is a starting point.</span>
+                <span>Campus &nbsp; ✧ &nbsp; Student profiling</span>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add / Edit Student Modal -->
+    <div
+        class="modal fade"
+        id="studentModal"
+        tabindex="-1"
+        aria-labelledby="formTitle"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <div>
+                        <div class="eyebrow">STUDENT INFORMATION</div>
+
+                        <h2 class="modal-title fs-4" id="formTitle">
+                            Add a student
+                        </h2>
+                    </div>
+
+                    <button
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+                </div>
+
+                <!-- Student Form -->
+                <form id="studentForm">
+                    <div class="modal-body">
+                        <p class="text-secondary small">
+                            Fields marked * are required.
+                            Use sample data for this demo.
+                        </p>
+
+                        <input type="hidden" id="recordKey">
+
+                        <!-- Personal Details -->
+                        <h3 class="form-section">
+                            01 &nbsp; Personal details
+                        </h3>
+
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <label class="form-label" for="firstName">
+                                    First name *
+                                </label>
+
+                                <input
+                                    id="firstName"
+                                    class="form-control"
+                                    required
+                                    maxlength="50"
+                                    autocomplete="given-name"
+                                >
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label class="form-label" for="lastName">
+                                    Last name *
+                                </label>
+
+                                <input
+                                    id="lastName"
+                                    class="form-control"
+                                    required
+                                    maxlength="50"
+                                    autocomplete="family-name"
+                                >
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label class="form-label" for="email">
+                                    Email address *
+                                </label>
+
+                                <input
+                                    id="email"
+                                    type="email"
+                                    class="form-control"
+                                    required
+                                    maxlength="100"
+                                    autocomplete="email"
+                                >
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label class="form-label" for="phone">
+                                    Contact number
+                                </label>
+
+                                <input
+                                    id="phone"
+                                    type="tel"
+                                    class="form-control"
+                                    maxlength="30"
+                                    autocomplete="tel"
+                                >
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label" for="address">
+                                    Address
+                                </label>
+
+                                <input
+                                    id="address"
+                                    class="form-control"
+                                    maxlength="200"
+                                    autocomplete="street-address"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Academic Details -->
+                        <h3 class="form-section mt-4">
+                            02 &nbsp; Academic details
+                        </h3>
+
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <label for="studentId" class="form-label">
+                                    Student ID *
+                                </label>
+
+                                <input
+                                    id="studentId"
+                                    class="form-control"
+                                    required
+                                    maxlength="30"
+                                    placeholder="e.g. 2026-00123"
+                                >
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="program" class="form-label">
+                                    Program *
+                                </label>
+
+                                <select
+                                    id="program"
+                                    class="form-select"
+                                    required
+                                >
+                                    <option value="">Select program</option>
+                                    <option value="BSIT">
+                                        BSIT — Information Technology
+                                    </option>
+                                    <option value="BSCS">
+                                        BSCS — Computer Science
+                                    </option>
+                                    <option value="BSIS">
+                                        BSIS — Information Systems
+                                    </option>
+                                    <option value="ACT">
+                                    	ACT - Associate in Computer Technology
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label for="year" class="form-label">
+                                    Year level *
+                                </label>
+
+                                <select id="year" class="form-select">
+                                    <option value="1">1st year</option>
+                                    <option value="2">2nd year</option>
+                                    <option value="3">3rd year</option>
+                                    <option value="4">4th year</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label for="section" class="form-label">
+                                    Section *
+                                </label>
+
+                                <input
+                                    id="section"
+                                    class="form-control"
+                                    required
+                                    maxlength="10"
+                                    placeholder="A"
+                                >
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label for="status" class="form-label">
+                                    Status *
+                                </label>
+
+                                <select id="status" class="form-select">
+                                    <option>Active</option>
+                                    <option>Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Validation Message -->
+                        <div
+                            id="formError"
+                            class="alert alert-danger mt-3 mb-0"
+                            role="alert"
+                            hidden
+                        ></div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal"
+                        >
+                            Cancel
+                        </button>
+
+                        <button type="submit" class="btn btn-primary">
+                            Save student
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Profile Drawer -->
+    <div
+        class="offcanvas offcanvas-end profile-drawer"
+        id="profileDrawer"
+        tabindex="-1"
+        aria-labelledby="profileTitle"
+    >
+        <div class="offcanvas-header">
+            <span class="eyebrow">STUDENT PROFILE</span>
+
+            <button
+                class="btn-close"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"
+            ></button>
+        </div>
+
+        <div class="offcanvas-body" id="profileContent">
+            <!-- Profile content is generated by app.js -->
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div
+            class="toast"
+            id="feedbackToast"
+            role="status"
+            aria-live="polite"
+        >
+            <div class="toast-body d-flex">
+                <span id="toastMessage"></span>
+
+                <button
+                    class="btn-close ms-auto"
+                    data-bs-dismiss="toast"
+                    aria-label="Dismiss"
+                ></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript: Bootstrap must load before app.js -->
+    <script src="vendor/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
